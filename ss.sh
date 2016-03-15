@@ -45,13 +45,13 @@ cat <<EOF | sudo tee ${CONFIG_FILE}
         },
   "method": "${SS_METHOD}",
   "timeout": 300,
-  "fast_open": true,
+  "fast_open": false,
   "workers": 5
 }
 EOF
 
 #set fastopen
-echo 3 > /proc/sys/net/ipv4/tcp_fastopen
+#echo 3 > /proc/sys/net/ipv4/tcp_fastopen
 
 # create service
 cat <<EOF | sudo tee ${SERVICE_FILE}
