@@ -26,3 +26,4 @@ firewall-cmd --list-ports
 echo "================================"
 echo ""
 echo "Congratulations! denyhosts and firewall has been installed on your system."
+echo "--------------------------------"

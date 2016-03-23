@@ -50,7 +50,7 @@ systemctl status shadowsocks -l
 
 echo "================================"
 echo ""
-echo "Congratulations! Shadowsocks has been installed on your system."
+echo "Congratulations! Shadowsocks has been reconfiged on your system."
 echo "You shadowsocks connection info:"
 echo "--------------------------------"
 echo "server:      ${SS_IP}"
