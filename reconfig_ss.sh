@@ -1,7 +1,7 @@
 #!/bin/bash
 # Install Shadowsocks on CentOS 7
 
-echo "Installing Shadowsocks..."
+echo "Changing Shadowsocks..."
 
 random-string()
 {
@@ -9,7 +9,6 @@ random-string()
 }
 
 CONFIG_FILE=/etc/shadowsocks.json
-SERVICE_FILE=/etc/systemd/system/shadowsocks.service
 SS_PASSWORD_1=$(random-string 32)
 SS_PORT_1=8381
 SS_PASSWORD_2=$(random-string 32)
@@ -23,15 +22,6 @@ SS_PORT_5=8385
 SS_METHOD=aes-256-cfb
 SS_FAST_OPEN=true
 SS_IP=`ip route get 1 | awk '{print $NF;exit}'`
-GET_PIP_FILE=/tmp/get-pip.py
-
-# install pip
-curl "https://bootstrap.pypa.io/get-pip.py" -o "${GET_PIP_FILE}"
-python ${GET_PIP_FILE}
-
-# install shadowsocks
-pip install --upgrade pip
-pip install shadowsocks
 
 # create shadowsocls config
 cat <<EOF | sudo tee ${CONFIG_FILE}
@@ -51,25 +41,8 @@ cat <<EOF | sudo tee ${CONFIG_FILE}
 }
 EOF
 
-#set fastopen
-#echo 3 > /proc/sys/net/ipv4/tcp_fastopen
-
-# create service
-cat <<EOF | sudo tee ${SERVICE_FILE}
-[Unit]
-Description=Shadowsocks
-
-[Service]
-TimeoutStartSec=0
-ExecStart=/usr/bin/ssserver -c ${CONFIG_FILE}
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
 # start service
-systemctl enable shadowsocks
-systemctl start shadowsocks
+systemctl restart shadowsocks
 
 # view service status
 sleep 5
