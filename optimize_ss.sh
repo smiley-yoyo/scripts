@@ -41,8 +41,11 @@ EOF
 
 sysctl -p
 
+# start service
 systemctl restart shadowsocks
 
+# view service status
+sleep 5
 systemctl status shadowsocks
 
 echo "================================"
