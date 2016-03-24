@@ -41,6 +41,8 @@ EOF
 
 sysctl -p
 
+systemctl restart shadowsocks
+
 echo "================================"
 echo ""
 echo "Congratulations! Shadowsocks has been Optimized on your system."
