@@ -43,6 +43,8 @@ sysctl -p
 
 systemctl restart shadowsocks
 
+systemctl status shadowsocks
+
 echo "================================"
 echo ""
 echo "Congratulations! Shadowsocks has been Optimized on your system."
