@@ -8,7 +8,7 @@ random-string()
     cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${1:-32} | head -n 1
 }
 
-PORTS_USED=`netstat -antl |grep LISTEN | awk '{ print $4 }' | cut -d: -f2|sed '/^$/d'|sort`
+PORTS_USED=`ss -antl |grep LISTEN | awk '{ print $4 }' | cut -d: -f2|sed '/^$/d'|sort`
 PORTS_USED=`echo $PORTS_USED|sed 's/\s/$\|^/g'`
 PORTS_USED="^${PORTS_USED}$"
 PORTS_AVAILABLE=(`seq 1025 9000 | grep -v -E "$PORTS_USED" | shuf -n 5 | sort`)
