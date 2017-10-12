@@ -64,18 +64,12 @@ echo "Tuning server..."
 LIMITS_CONF=/etc/security/limits.conf
 SYSCTL_CONF=/etc/sysctl.d/local.conf
 
-echo "Backing up ${LIMITS_CONF} to ${LIMITS_CONF}.old"
-mv ${LIMITS_CONF} ${LIMITS_CONF}.old
-
 cat <<EOF | sudo tee ${LIMITS_CONF}
 * soft nofile 51200
 * hard nofile 51200
 EOF
 
 ulimit -n 51200
-
-echo "Backing up ${SYSCTL_CONF} to ${SYSCTL_CONF}.old"
-mv ${SYSCTL_CONF} ${SYSCTL_CONF}.old
 
 cat <<EOF | sudo tee ${SYSCTL_CONF}
 net.ipv4.tcp_fastopen = 3
@@ -148,6 +142,29 @@ net.ipv6.conf.all.forwarding = 1
 # 开启所有网络设备的 IPv6 流量转发，用于支持 IPv6 的正常访问
 EOF
 
+echo "Installing fail2ban"
+yum install -y epel-release
+yum install -y fail2ban
+
+JAIL_CONF=/etc/fail2ban/jail.d/ssh-iptables.conf
+cat <<EOF | sudo tee ${JAIL_CONF}
+[ssh-iptables]
+enable = true
+filter = sshd
+action = iptables[name=SSH, port=ssh, protocol=tcp]
+logpath = /var/log/secure
+maxretry = 5
+EOF
+
+systemctl enable fail2ban
+
+echo "Configuring firewall..."
+firewall-cmd --permanent --add-port=${SS_PORT}/tcp
+firewall-cmd --permanent --add-port=${SS_PORT}/udp
+firewall-cmd --reload
+
+systemctl enable firewalld
+
 echo "================================"
 echo ""
 echo "Congratulations! Shadowsocks has been installed on your system."
@@ -159,4 +176,7 @@ echo "password:    ${SS_PASSWORD}"
 echo "method:      ${SS_METHOD}"
 echo "--------------------------------"
 echo "Restart is required."
-echo "Please manual restart your server after installation completed."
+echo "Server will reboot in 10 seconds."
+
+sleep 10
+shutdown -r now
