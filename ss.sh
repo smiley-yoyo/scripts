@@ -15,16 +15,8 @@ PORTS_AVAILABLE=(`seq 1025 9000 | grep -v -E "$PORTS_USED" | shuf -n 5 | sort`)
 
 CONFIG_FILE=/etc/shadowsocks.json
 SERVICE_FILE=/etc/systemd/system/shadowsocks.service
-SS_PASSWORD_1=$(random-string 32)
-SS_PORT_1=${PORTS_AVAILABLE[0]}
-SS_PASSWORD_2=$(random-string 32)
-SS_PORT_2=${PORTS_AVAILABLE[1]}
-SS_PASSWORD_3=$(random-string 32)
-SS_PORT_3=${PORTS_AVAILABLE[2]}
-SS_PASSWORD_4=$(random-string 32)
-SS_PORT_4=${PORTS_AVAILABLE[3]}
-SS_PASSWORD_5=$(random-string 32)
-SS_PORT_5=${PORTS_AVAILABLE[4]}
+SS_PASSWORD=$(random-string 16)
+SS_PORT=${PORTS_AVAILABLE[0]}
 SS_METHOD=aes-256-cfb
 SS_FAST_OPEN=true
 SS_IP=`ip route get 1 | awk '{print $NF;exit}'`
@@ -43,11 +35,7 @@ cat <<EOF | sudo tee ${CONFIG_FILE}
 {
   "server": "0.0.0.0",
   "port_password": {
-        "${SS_PORT_1}": "${SS_PASSWORD_1}",
-        "${SS_PORT_2}": "${SS_PASSWORD_2}",
-        "${SS_PORT_3}": "${SS_PASSWORD_3}",
-        "${SS_PORT_4}": "${SS_PASSWORD_4}",
-        "${SS_PORT_5}": "${SS_PASSWORD_5}"
+        "${SS_PORT}": "${SS_PASSWORD}"
         },
   "method": "${SS_METHOD}",
   "timeout": 300,
@@ -142,16 +130,8 @@ systemctl status denyhosts
 systemctl status shadowsocks
 
 echo "Configuring firewall..."
-firewall-cmd --permanent --add-port=${SS_PORT_1}/tcp
-firewall-cmd --permanent --add-port=${SS_PORT_1}/udp
-firewall-cmd --permanent --add-port=${SS_PORT_2}/tcp
-firewall-cmd --permanent --add-port=${SS_PORT_2}/udp
-firewall-cmd --permanent --add-port=${SS_PORT_3}/tcp
-firewall-cmd --permanent --add-port=${SS_PORT_3}/udp
-firewall-cmd --permanent --add-port=${SS_PORT_4}/tcp
-firewall-cmd --permanent --add-port=${SS_PORT_4}/udp
-firewall-cmd --permanent --add-port=${SS_PORT_5}/tcp
-firewall-cmd --permanent --add-port=${SS_PORT_5}/udp
+firewall-cmd --permanent --add-port=${SS_PORT}/tcp
+firewall-cmd --permanent --add-port=${SS_PORT}/udp
 firewall-cmd --reload
 echo "following ports are enabled:"
 firewall-cmd --list-ports
@@ -162,10 +142,7 @@ echo "Congratulations! Shadowsocks has been installed on your system."
 echo "You shadowsocks connection info:"
 echo "--------------------------------"
 echo "server:      ${SS_IP}"
-echo "port_password: ${SS_PORT_1} : ${SS_PASSWORD_1}"
-echo "port_password: ${SS_PORT_2} : ${SS_PASSWORD_2}"
-echo "port_password: ${SS_PORT_3} : ${SS_PASSWORD_3}"
-echo "port_password: ${SS_PORT_4} : ${SS_PASSWORD_4}"
-echo "port_password: ${SS_PORT_5} : ${SS_PASSWORD_5}"
+echo "port:        ${SS_PORT}"
+echo "password:    ${SS_PASSWORD}"
 echo "method:      ${SS_METHOD}"
 echo "--------------------------------"
