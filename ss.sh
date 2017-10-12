@@ -26,9 +26,11 @@ GET_PIP_FILE=/tmp/get-pip.py
 curl "https://bootstrap.pypa.io/get-pip.py" -o "${GET_PIP_FILE}"
 python ${GET_PIP_FILE}
 
+# install git
+yum install git -y
+
 # install shadowsocks
-pip install --upgrade pip
-pip install shadowsocks
+pip install git+https://github.com/shadowsocks/shadowsocks.git@master
 
 # create shadowsocls config
 cat <<EOF | sudo tee ${CONFIG_FILE}
