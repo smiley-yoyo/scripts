@@ -175,8 +175,8 @@ echo "port:        ${SS_PORT}"
 echo "password:    ${SS_PASSWORD}"
 echo "method:      ${SS_METHOD}"
 echo "--------------------------------"
-echo "Restart is required."
-echo "Server will reboot in 10 seconds."
+echo "Restart is required. Press enter to restart"
 
-sleep 10
+read
+sleep 5
 shutdown -r now
