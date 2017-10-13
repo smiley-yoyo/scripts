@@ -146,13 +146,12 @@ echo "Installing fail2ban"
 yum install -y epel-release
 yum install -y fail2ban
 
-JAIL_CONF=/etc/fail2ban/jail.d/ssh-iptables.conf
+JAIL_CONF=/etc/fail2ban/jail.d/sshd.local
 cat <<EOF | sudo tee ${JAIL_CONF}
-[ssh-iptables]
-enable = true
-filter = sshd
-action = iptables[name=SSH, port=ssh, protocol=tcp]
-logpath = /var/log/secure
+[sshd]
+enabled = true
+port = ssh
+bantime = 86400
 maxretry = 5
 EOF
 
